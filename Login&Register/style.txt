@@ -1,0 +1,60 @@
+
+
+// clareance
+
+import { StyleSheet } from "react-native";
+import { Dimensions } from "react-native";
+
+const windowWidth = Dimensions.get('window').width;
+const styles = StyleSheet.create({
+    mainContainer: {
+      flex:1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      borderTopLeftRadius:50,
+      borderTopRightRadius:50,
+      backgroundColor:"white",
+      marginTop:180,
+    },
+    inputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    label: {
+      width: 80, 
+      fontSize: 16,
+    },
+    textInput: {
+      flex: 1,
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius:15,
+      paddingHorizontal: 10,
+    },
+    button:{     
+      backgroundColor:"blue", 
+      borderRadius:5, 
+      width:windowWidth * .3, 
+      height: 40, 
+      alignItems:"center"     
+    },
+    forgotPass: {
+       marginBottom:10,
+       alignItems:"center", 
+       bottom:15,
+    },
+    signInContainer: {
+        marginTop: 20,
+        flexDirection: 'row', // Added to align "Sign in" text horizontally with the rest of the text
+      },
+      signInText: {
+        marginLeft: 5, 
+        fontWeight: 'bold', 
+        color: 'blue', 
+      },
+  });
+
+export default styles;

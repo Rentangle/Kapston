@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "879716187459",
+    "project_id": "thesis-project-784ed",
+    "storage_bucket": "thesis-project-784ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879716187459:android:ce934f9222c3c29ccb03f6",
+        "android_client_info": {
+          "package_name": "com.soyticz.ThesisApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJJWajnQOcAlYtX8jEPT5ovP9wWWNKjNk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
