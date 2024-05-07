@@ -15,6 +15,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+  
 
   const handleUserData = async () => {
     setLoading(true);
@@ -31,6 +32,7 @@ const LoginPage = () => {
         keyboardVerticalOffset={20000}
         style={{ justifyContent: 'flex-end' }}
       >
+        
         <View style={styles.logoContainer}>
           <Image source={ClientLogo} style={styles.logo} />
         </View>

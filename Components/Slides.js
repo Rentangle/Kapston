@@ -6,6 +6,7 @@ import Pagination from "./Pagination";
 
 const Slider = () => {
     const [index, setIndex] = useState(0);
+    const originalData = Slides;
     const scrollX = useRef(new Animated.Value(0)).current;
     const handleOnScroll = event => {
         Animated.event([

@@ -7,9 +7,10 @@ export default function SlideItem ({item}) {
     return (
        <View style={styles.container}>
         <View style={styles.secondContainer}>
-        <Image source={item.img}
-        resizeMode="contain" style={styles.image}
+            <View style={styles.imageContainer}>
+        <Image source={item.img} style={styles.image} 
         />
+        </View>
         
        <View style={styles.content}>
             <Text style={styles.title}>{item.title}</Text>
@@ -21,22 +22,24 @@ export default function SlideItem ({item}) {
     )
 };
 const styles = StyleSheet.create({
+    imageContainer:{
+     widht:300
+    },
     container:{
         width,
         marginTop:40,
         height: height * .3,
-        marginBottom:10,
+        marginBottom:20,
         alignItems:'center'
     },
     image:{
-        width:'50%',
-        flex:0.6,
-        bottom:100,
+        width:100,
+        height:70
+   
+       
     },
     content:{
-        flex:0.4,
-        alignItems:'center'
-        
+        alignItems:'center',
     },
     title:{
         fontSize:24,
