@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "35158276767",
+    "project_id": "auth-app-50966",
+    "storage_bucket": "auth-app-50966.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35158276767:android:de71b9b287308bfa20c0aa",
+        "android_client_info": {
+          "package_name": "com.soyticz.thesisapplicationsnew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy91029BhY42zYRvdryG3pHI_yZy9AeFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
