@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   inBut: {
-    paddingHorizontal: 25,
-    paddingVertical: 5,
+    paddingHorizontal: 50,
+    paddingVertical: 1,
     borderRadius: 50,
   },
   textSign: {
-    fontSize: 12,
+    fontSize: 20,
     fontWeight: "bold",
     color: "white",
   },

@@ -7,14 +7,12 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
-
-import { Color, Border, FontSize, FontFamily } from "../GlobalStyles";
+import { Color } from "../../GlobalStyles";
 
 const ModalComponent = ({ visible, onClose, onSubmit }) => {
   const [verificationCode, setVerificationCode] = useState("");
 
   const handleSubmit = () => {
-    // Call onSubmit with the entered verificationCode
     onSubmit(verificationCode);
   };
 

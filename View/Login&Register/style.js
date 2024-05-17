@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native";
-import { Color, Border, FontFamily, FontSize } from "../GlobalStyles";
+import { Color, Border, FontFamily, FontSize } from "../../GlobalStyles";
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: Color.colorGhostwhite,
+    backgroundColor: "white",
     flex: 1,
   },
 

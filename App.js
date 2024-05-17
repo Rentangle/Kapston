@@ -2,17 +2,9 @@ import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Register from "./Login&Register/register";
-import Home from "./Screen/Home";
-import Schedules from "./Screen/Schedules";
-import Profiles from "./Screen/Profile";
-import Settings from "./Screen/Settings";
-import Index from "./Screen";
-import Carousel from "./Components/Carousel";
-import { SafeAreaView } from "react-native";
-import Slider from "./Components/Slides";
-import LoginPage from "./Login&Register/login";
-import firestore from "@react-native-firebase/firestore";
+import Register from "./View/Login&Register/Registration";
+import Index from "./View/Screen/index";
+import LoginPage from "./View/Login&Register/LoginPage";
 
 const Stack = createStackNavigator();
 
@@ -39,22 +31,20 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {!isLoggedIn ? (
-          <Stack.Screen
-            name="Login"
-            component={LoginPage}
-            options={{ headerShown: false }}
-          />
-        ) : (
-          <Stack.Screen
-            name="Main"
-            component={Index}
-            options={{ headerShown: false }}
-          />
-        )}
+        <Stack.Screen
+          name="Login"
+          component={LoginPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Main"
+          component={Index}
+          options={{ headerShown: false }}
+        />
+
         <Stack.Screen
           name="Register"
-          component={Register}
+          component={LoginPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

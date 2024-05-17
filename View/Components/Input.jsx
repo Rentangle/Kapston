@@ -1,7 +1,7 @@
-import { View, TextInput, StyleSheet, Text } from "react-native";
+import { View, TextInput, StyleSheet, Text, Dimensions } from "react-native";
 import React from "react";
 import { AntDesign, FontAwesome, Entypo } from "@expo/vector-icons";
-
+const { width, height } = Dimensions.get("screen");
 export default function Input({
   secureTextEntry,
   EntypoIcon,
@@ -10,7 +10,7 @@ export default function Input({
   onChangeText,
   placeholder,
   value,
-  editable,
+  editable = true,
   errorMessage,
 }) {
   return (
@@ -42,6 +42,7 @@ export default function Input({
           style={styles.textInput}
           maxLength={25}
           editable={editable}
+          textAlign=""
         />
       </View>
       {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
@@ -55,32 +56,25 @@ const styles = StyleSheet.create({
   },
   action: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 14,
-    paddingBottom: 3,
-    paddingHorizontal: 15,
+    marginTop: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderWidth: 1,
     borderColor: "#420475",
-    borderRadius: 50,
+    borderRadius: 10,
   },
   textInput: {
-    flex: 1,
-    marginLeft: 10,
-    color: "#05375a",
-    height: 20,
-    marginBottom: 10,
+    width: width * 0.6,
   },
   icon: {
     margin: 1,
-    paddingBottom: 5,
-    marginBottom: 10,
   },
   iconFont: {
-    marginLeft: 9,
+    marginRight: 10,
   },
   iconEntypo: {
-    left: 4,
-    top: 3,
+    left: -6,
+    top: 1,
   },
   error: {
     color: "red",
