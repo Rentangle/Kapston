@@ -21,7 +21,7 @@ export default function Button({ onPress, buttonText, textStyle, disabled }) {
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 20,
     alignItems: "center",
     textAlign: "center",
     margin: 20,

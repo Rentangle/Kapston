@@ -1,22 +1,16 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import Button from "../Components/Button";
-import { Logout } from "../../Controller/SettingsController";
+import { Logout, handleUserID } from "../../Controller/SettingsController";
+import { reducer, initialState } from "../Hooks/LoginHooks";
 import {
   NavigationContainerRefContext,
   useNavigation,
 } from "@react-navigation/native";
+import { userData } from "../../Model/Users";
 
 const Settings = () => {
-  const navigation = useNavigation();
-
-  return (
-    <>
-      <Text> Hi this is Settings File</Text>
-      <Button buttonText={"LogOut"} onPress={() => Logout(navigation)} />
-    </>
-  );
+  return <></>;
 };
 
 export default Settings;

@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,13 +13,20 @@ import ClientLogo from "../../assets/LoginandRegisterAssets/LandayanLogo.png";
 import Texts from "../Components/Text";
 import Input from "../Components/Input";
 import Button from "../Components/Button";
-import { handleLogin } from "../../Controller/LoginController";
+import { handleLogin, handleUserID } from "../../Controller/LoginController";
 import { reducer, initialState } from "../Hooks/LoginHooks";
+import ForgotPassword from "./ForgotPassword";
+import { ChangeScreen } from "../../Controller/FPController";
 
 const LoginPage = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(state.email);
+
+  function handleChangeScreen() {
+    ChangeScreen(navigation);
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -47,7 +54,9 @@ const LoginPage = () => {
             secureTextEntry={true}
           />
           <View style={styles.forgotPassword}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
               <Text style={{ color: "blue" }}>Forgot Password</Text>
             </TouchableOpacity>
           </View>

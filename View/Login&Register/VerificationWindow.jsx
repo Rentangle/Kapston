@@ -58,7 +58,7 @@ const modalStyles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
   },
   modalView: {
-    backgroundColor: Color.colorGhostwhite,
+    backgroundColor: "white",
     borderRadius: 30,
     padding: 50,
     alignItems: "center",
@@ -87,7 +87,6 @@ const modalStyles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     width: "100%",
-    borderRadius: 10,
     paddingHorizontal: 30,
   },
   buttonText: {
@@ -102,7 +101,6 @@ const modalStyles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
     width: "100%",
-    borderRadius: 10,
     paddingHorizontal: 30,
   },
   closeButtonText: {

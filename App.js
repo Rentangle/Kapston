@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Register from "./View/Login&Register/Registration";
 import Index from "./View/Screen/index";
 import LoginPage from "./View/Login&Register/LoginPage";
+import ForgotPassword from "./View/Login&Register/ForgotPassword";
+import PasswordReset from "./View/Login&Register/PasswordReset";
 
 const Stack = createStackNavigator();
 
@@ -44,8 +46,20 @@ export default function App() {
 
         <Stack.Screen
           name="Register"
-          component={LoginPage}
-          options={{ headerShown: false }}
+          component={Register}
+          options={{ headerTitle: "Create an Account" }}
+        />
+
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{ headerTitle: "Forgot Password" }}
+        />
+
+        <Stack.Screen
+          name="PasswordReset"
+          component={PasswordReset}
+          options={{ headerTitle: "Password Reset" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

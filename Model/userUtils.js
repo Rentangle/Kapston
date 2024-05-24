@@ -1,47 +1,77 @@
 import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const checkUserData = async (email, password, navigation) => {
   try {
+    if (!email || !password) {
+      // Show toast messages for empty fields
+      if (!email) {
+        ToastAndroid.show("Please Enter your Email", ToastAndroid.SHORT);
+      }
+      if (!password) {
+        ToastAndroid.show("Please Enter your Password", ToastAndroid.SHORT);
+      }
+      return false;
+    }
+
     const usersSnapshot = await firestore()
       .collection("users")
       .where("email", "==", email)
-      .where("password", "==", password)
       .get();
 
     if (!usersSnapshot.empty) {
-      // If there's a match, user with given email and password exists
-      const userDoc = usersSnapshot.docs[0]; // Assuming there's only one user with this email and password
-      const user = userDoc.data();
-      const uid = userDoc.id; // Get the uid of the user
+      let userDoc = null;
 
-      // Storing user credentials in AsyncStorage
-      await AsyncStorage.setItem("email", email);
-      await AsyncStorage.setItem("password", password);
+      // Check each document to find the one with the matching password
+      usersSnapshot.forEach((doc) => {
+        if (doc.data().password === password) {
+          userDoc = doc;
+        }
+      });
 
-      ToastAndroid.show(`Welcome ${email}`, ToastAndroid.SHORT);
+      if (userDoc) {
+        const user = userDoc.data();
+        const uid = userDoc.id; // Get the uid of the user
+        const fullname = user.fullname;
+        const userEmail = user.email;
 
-      // Navigate to the homepage (Main screen) with uid as a parameter
-      navigation.navigate("Main", { uid }); // Pass the uid as a parameter
+        ToastAndroid.show(`Welcome ${fullname}`, ToastAndroid.SHORT);
 
-      return true;
-    } else if (email === "" || password === "") {
-      // Show toast messages for empty fields
-      if (password === "") {
-        ToastAndroid.show("Please Enter your Password", ToastAndroid.SHORT);
+        // Navigate to the homepage (Main screen) with uid as a parameter
+        navigation.navigate("Main", { uid }); // Pass the uid as a parameter
+
+        const currentUser = auth().currentUser;
+        console.log(user);
+        usersSnapshot.forEach((doc) => {
+          currentUser.updateProfile({
+            displayName: fullname,
+          });
+          currentUser.updateEmail(email);
+        }); // Add a closing parenthesis here
+        console.log(currentUser);
+        return true;
+      } else {
+        // Password does not match for the found email
+        ToastAndroid.show(
+          "Email or Password is incorrect!",
+          ToastAndroid.SHORT
+        );
+        return false;
       }
-      if (email === "") {
-        ToastAndroid.show("Please Enter your Email", ToastAndroid.SHORT);
-      }
-      return false;
     } else {
-      // No user found with the given email and password
+      // No user found with the given email
       ToastAndroid.show("Email or Password is incorrect!", ToastAndroid.SHORT);
       return false;
     }
   } catch (error) {
     console.error("Error checking user data:", error);
+    ToastAndroid.show(
+      "An error occurred. Please try again later.",
+      ToastAndroid.SHORT
+    );
+    return false;
   }
 };
 

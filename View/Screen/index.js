@@ -4,15 +4,20 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Home from "./Home";
 import Profile from "./Profile";
 import Schedules from "./Schedules";
-import Settings from "./Settings";
+import Notification from "./Settings";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import AvatarComponent from "../Components/Avatar";
 
 const Tab = createBottomTabNavigator();
 const screenOptions = {
   tabBarShowLabel: false,
   headerShown: true,
+  headerStyle: {
+    backgroundColor: "#19a7c5",
+    elevation: 5,
+  },
   tabBarStyle: {
     backgroundColor: "white",
     height: 80,
@@ -45,16 +50,7 @@ export default function Index() {
                 <Text style={styles.welcomeText}>Jhon Carlo!</Text>
               </View>
               <View style={{ marginTop: 25, paddingHorizontal: 60 }}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Profile")}
-                >
-                  <View style={styles.profileContainer}>
-                    <Image
-                      source={require("../../assets/LoginandRegisterAssets/LandayanLogo.png")}
-                      style={styles.avatar}
-                    />
-                  </View>
-                </TouchableOpacity>
+                <AvatarComponent />
               </View>
             </View>
           ),
@@ -64,7 +60,7 @@ export default function Index() {
                 <Entypo
                   name="home"
                   size={24}
-                  color={focused ? "black" : "burlywood"}
+                  color={focused ? "black" : "#00bbf2"}
                 />
                 <Text style={{ fontSize: 12, color: "#16247d" }}>Home</Text>
               </View>
@@ -78,8 +74,8 @@ export default function Index() {
         component={Profile}
         options={{
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: "black" }}>
-              Hello Jhon Carlo
+            <Text style={{ fontSize: 25, fontWeight: "bold", color: "black" }}>
+              Profile
             </Text>
           ),
           tabBarIcon: ({ focused }) => {
@@ -88,7 +84,7 @@ export default function Index() {
                 <AntDesign
                   name="user"
                   size={24}
-                  color={focused ? "black" : "burlywood"}
+                  color={focused ? "black" : "#00bbf2"}
                 />
                 <Text style={{ fontSize: 12, color: "#16247d" }}>Profile</Text>
               </View>
@@ -106,7 +102,7 @@ export default function Index() {
                 <AntDesign
                   name="calendar"
                   size={24}
-                  color={focused ? "black" : "burlywood"}
+                  color={focused ? "black" : "#00bbf2"}
                 />
                 <Text style={{ fontSize: 12, color: "#16247d" }}>Schedule</Text>
               </View>
@@ -116,18 +112,20 @@ export default function Index() {
       />
 
       <Tab.Screen
-        name="Settings"
-        component={Settings}
+        name="Notification"
+        component={Notification}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
               <View style={{ alignItems: "center", justifyContent: "center" }}>
                 <Ionicons
-                  name="settings"
+                  name="notifications"
                   size={24}
-                  color={focused ? "black" : "burlywood"}
+                  color={focused ? "black" : "#00bbf2"}
                 />
-                <Text style={{ fontSize: 12, color: "#16247d" }}>Settings</Text>
+                <Text style={{ fontSize: 12, color: "#16247d" }}>
+                  Notificaton
+                </Text>
               </View>
             );
           },

@@ -1,10 +1,24 @@
-import { View, Text } from "react-native"
-import React from "react"
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import ActionButton from "../Components/FloatingActionButton";
+import Calendars from "../Components/Calendar";
+import { useState } from "react";
+import PopupSchedule from "../Components/PopupSchedule";
+export default function Schedules() {
+  const [showPopupSchedule, setShowPopupSchedule] = useState(false);
 
-const Schedules = () => {
+  const PopUp = () => {
+    setShowPopupSchedule(true);
+  };
   return (
-    <Text> Hi  this is  Schedules File</Text>
-  )
-};
+    <View style={{ flex: 1 }}>
+      <Calendars />
+      <ActionButton onPress={PopUp} />
+      <PopupSchedule
+        visible={showPopupSchedule}
+        onClose={() => setShowPopupSchedule(false)}
+      />
+    </View>
+  );
+}
 
-export default Schedules;
+const styles = StyleSheet.create({});
