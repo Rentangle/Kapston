@@ -12,6 +12,7 @@
     "@dotlottie/react-player": "^1.6.19",
     "@expo/metro-runtime": "~3.2.3",
     "@lottiefiles/react-lottie-player": "^3.5.4",
+    "@notifee/react-native": "^9.0.2",
     "@react-native-community/progress-bar-android": "^1.0.5",
     "@react-native-firebase/messaging": "^20.5.0",
     "@react-native-firebase/storage": "^20.5.0",

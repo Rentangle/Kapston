@@ -56,7 +56,6 @@ const PushNotification: React.FC = () => {
 
   return (
     <View>
-      <Text>Push Notification Example</Text>
     </View>
   );
 };

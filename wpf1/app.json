@@ -3,6 +3,7 @@
     "name": "wpf1",
     "slug": "wpf1",
     "plugins": ["@react-native-firebase/app", "@react-native-firebase/auth"],
+
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
