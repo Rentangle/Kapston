@@ -4,24 +4,21 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RegisterEmail, RegisterView } from "./Views/Register/RegisterView";
 import Index from "./Views/Navigation/Index";
-import { LoginView } from "./Views/Login/LoginView";
+import { ForgotPassword, LoginView } from "./Views/Login/LoginView";
+import NotificationView from './Views/Screens/NotificationView';
+import SettingsView from './Views/Screens/SettingsView';
+import LandingPage from './Views/LandingPage';
+import PushNotification from './Controller/PushNotificationController'; // Import the PushNotification component
+import VerificationScreen from "./Views/Screens/VerificationScreen";
+import ProfilePage from "./Views/Screens/ProfileView";
 
 const Stack = createStackNavigator();
-
-type RootStackParamList = {
-  Login: undefined;
-  Main: undefined;
-  Register: undefined;
-  ForgotPassword: undefined;
-  PasswordReset: undefined;
-};
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     loadUserData();
-    console.log(isLoggedIn);
   }, []);
 
   const loadUserData = async () => {
@@ -40,6 +37,11 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
+          name="Landing"
+          component={LandingPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Login"
           component={LoginView}
           options={{ headerShown: false }}
@@ -47,6 +49,11 @@ export default function App() {
         <Stack.Screen
           name="Main"
           component={Index}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="forgotPassword"
+          component={ForgotPassword}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -59,7 +66,18 @@ export default function App() {
           component={RegisterView}
           options={{ headerTitle: "Forgot Password" }}
         />
+        <Stack.Screen
+          name="Notification"
+          component={NotificationView}
+          options={{ headerTitle: "Notifications" }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={SettingsView}
+          options={{ headerTitle: "Settings" }}
+        />
       </Stack.Navigator>
+      <PushNotification /> 
     </NavigationContainer>
   );
 }

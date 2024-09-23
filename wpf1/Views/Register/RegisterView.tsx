@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import { validationSchema, emailValidationSchema } from '../../Controller/RegisterController'; // Ensure these schemas are defined
 import { Button, Input, ComboBox } from '../Components/Component';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { registerWithEmailAndPassword } from '../../Firebase/Authentication/Register';
+import VerificationScreens from '../Screens/VerificationScreen';
+
 
 interface RegisterViewProps {
     navigation: StackNavigationProp<any>; // Adjust 'any' to your specific stack params if defined
-}
-
-interface RegisterEmailProps {
-    navigation: StackNavigationProp<any>; // Adjust as needed
 }
 
 //#region Patient Credentials
@@ -23,7 +23,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ navigation }) => {
                 validationSchema={validationSchema}
                 onSubmit={(values) => {
                     console.log('Form values:', values);
-                    navigation.navigate('RegisterEmail');
+                    navigation.navigate('RegisterEmail', { patientDetails: values });
                 }}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, dirty }) => (
@@ -71,24 +71,90 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ navigation }) => {
 };
 //#endregion
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#f5f5f5',
+    },
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        width: '100%',
+        marginBottom: 20,
+        color: '#420475',
+    },
+    inputContainer: {
+        width: '100%',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    buttonContainer: {
+        width: '50%',
+        alignItems: 'center',
+    },
+});
+
+
+
+interface RegisterEmailProps {
+    navigation: StackNavigationProp<any>; // Adjust as needed
+    route: any; // Adjust according to your routing setup
+}
+
 //#region Email and Password
-export const RegisterEmail: React.FC<RegisterEmailProps> = ({ navigation }) => {
-    const [selectedValue, setSelectedValue] = useState('');
+export const RegisterEmail: React.FC<RegisterEmailProps> = ({ navigation, route }) => {
+    const { patientDetails } = route.params; 
+    const [selectedValue, setSelectedValue] = useState<'Patient' | 'Doctor'>('Patient');
     const [doctorId, setDoctorId] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [verificationText, setVerificationText] = useState('');
+    const [animationUrl, setAnimationUrl] = useState('');
+
+    const handleVerify = async (values: any) => {
+        if (values.password !== values.confirmPassword) {
+            return;
+        }
+
+        try {
+            await registerWithEmailAndPassword(
+                values.email,
+                values.password,
+                {
+                    fullname: patientDetails.name,
+                    age: patientDetails.age,
+                    address: patientDetails.address,
+                    phoneNumber: patientDetails.phoneNumber,
+                    licenseNumber: selectedValue === 'Doctor' ? doctorId : undefined,
+                    userType: selectedValue,
+                }
+            );
+            setVerificationText('Check your email for verification.');
+            setAnimationUrl('https://lottie.host/bace5f65-17e7-4a03-bd52-f4a7c6f23d43/IMbLsIQfBn.json');
+            setModalVisible(true);
+        } catch (error) {
+            console.error('Registration error:', error);
+        }
+    };
+
+    const isButtonEnabled = () => {
+        return (selectedValue === 'Patient' && doctorId === '') || 
+               (selectedValue === 'Doctor' && doctorId.length > 0);
+    };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Account Credentials</Text>
+        <View style={stylesEmail.container}>
+            <Text style={stylesEmail.header}>Account Credentials</Text>
             <Formik
-                initialValues={{ email: '', password: '', confirmPassword: '', userType: '', doctorId: '' }}
+                initialValues={{ email: '', password: '', confirmPassword: '', userType: '' }}
                 validationSchema={emailValidationSchema}
-                onSubmit={(values) => {
-                    console.log('Account values:', values);
-                    navigation.replace('LoginView'); // Navigate to Login
-                }}
+                onSubmit={handleVerify}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, dirty }) => (
-                    <View style={styles.inputContainer}>
+                    <View style={stylesEmail.inputContainer}>
                         <Input 
                             onChangeText={handleChange('email')} 
                             onBlur={handleBlur('email')} 
@@ -116,8 +182,8 @@ export const RegisterEmail: React.FC<RegisterEmailProps> = ({ navigation }) => {
                             selectedValue={selectedValue}
                             placeholder={'User Type'}
                             onValueChange={(itemValue) => {
-                                setSelectedValue(itemValue);
-                                handleChange('userType')(itemValue); 
+                                setSelectedValue(itemValue as 'Patient' | 'Doctor'); 
+                                handleChange('userType')(itemValue as 'Patient' | 'Doctor'); 
                                 if (itemValue !== "Doctor") {
                                     setDoctorId('');
                                 }
@@ -127,7 +193,7 @@ export const RegisterEmail: React.FC<RegisterEmailProps> = ({ navigation }) => {
                                 { label: "Doctor", value: "Doctor" },
                             ]}
                         />
-                        {selectedValue === 'Doctor' && (
+                        {(selectedValue === 'Doctor' && (
                             <Input 
                                 onChangeText={(text) => {
                                     setDoctorId(text);
@@ -136,25 +202,36 @@ export const RegisterEmail: React.FC<RegisterEmailProps> = ({ navigation }) => {
                                 onBlur={handleBlur('doctorId')} 
                                 placeholder={'Doctor ID'} 
                                 value={doctorId} 
-                                errorMessage={errors.doctorId} 
                             />
-                        )}
-                        <View style={styles.buttonContainer}>
+                        )) || (selectedValue === 'Patient')}
+                        <View style={stylesEmail.buttonContainer}>
                             <Button 
-                                onPress={()=> navigation.navigate('LoginView')} 
-                                buttonText={'Register'} 
-                                disabled={!(isValid && dirty || values.userType === 'Patient')} 
+                                onPress={handleSubmit} 
+                                buttonText={'Verify'} 
+                                disabled={!isValid || !dirty || !isButtonEnabled()} 
                             />
                         </View>
                     </View>
                 )}
             </Formik>
+
+            {/* Verification Modal */}
+            <VerificationScreens 
+                text={verificationText} 
+                url={animationUrl} 
+                visible={modalVisible} 
+                onClose={() => {
+                    setModalVisible(false);
+                    navigation.navigate('Login'); // Navigate to Login when modal is closed
+                }} 
+            />
         </View>
     );
 };
+
 //#endregion
 
-const styles = StyleSheet.create({
+const stylesEmail = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',

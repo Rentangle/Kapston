@@ -1,72 +1,116 @@
-// Views/Navigation/Index.tsx
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import HomeView from '../Screens/HomeView';
-import NotificationView from '../Screens/NotificationView';
 import MessagesView from '../Screens/MessagesView';
-import SettingsView from '../Screens/SettingsView';
 import ProfileView from '../Screens/ProfileView';
 import SchedulesView from '../Screens/SchedulesView';
-import { Entypo, AntDesign, Ionicons } from "@expo/vector-icons";
-import { useNavigation } from '@react-navigation/native';
-import { Badge } from 'react-native-paper'; // Ensure you have this import
-import { RootTabNavigationProp } from './navigation';
+import { Entypo, AntDesign } from "@expo/vector-icons";
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
+import firestore from '@react-native-firebase/firestore';
 
 const Tab = createBottomTabNavigator();
 
-const screenOptions = {
-  tabBarShowLabel: false,
-  headerShown: true,
-  headerStyle: {
-    backgroundColor: "#19a7c5",
-    elevation: 5,
-  },
-  tabBarStyle: {
-    backgroundColor: "white",
-    height: 80,
-  },
-};
-
 const Index: React.FC = () => {
-  const navigation = useNavigation<RootTabNavigationProp>();
-  const notificationsCount = 5; // Example notification count
+  const navigation = useNavigation<NavigationProp<any>>();
+  const lottieRef = useRef<LottieView | null>(null);
+  const [badgeCount, setBadgeCount] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(false);
+
+  // Function to increment badge count and play Lottie animation
+  const incrementBadge = () => {
+    const newCount = badgeCount + 1;
+    setBadgeCount(newCount);
+    setAutoPlay(true);
+
+    // Play the Lottie animation
+    if (lottieRef.current) {
+      console.log('Playing Lottie animation');
+      lottieRef.current.play();
+    } else {
+      console.log('Lottie ref is not defined');
+    }
+
+    // Reset autoPlay to false after 1 second
+    setTimeout(() => {
+      setAutoPlay(false);
+    }, 2000);
+    console.log('Badge incremented. Current count:', newCount);
+  };
+
+  // Listen to Firestore changes
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('appointments')
+      .onSnapshot((querySnapshot) => {
+        console.log('Snapshot received:', querySnapshot);
+        
+        // Count how many documents are currently pending
+        const pendingDocs = querySnapshot.docs.filter(doc => doc.data().status === "PENDING");
+  
+        if (!querySnapshot.empty) {
+          querySnapshot.docChanges().forEach((change) => {
+            if (change.type === "modified") {
+              const notificationData = change.doc.data();
+              if (notificationData.status === "ACCEPTED") {
+                console.log('Notification updated to ACCEPTED:', notificationData);
+                incrementBadge();
+              }
+            }
+          });
+        } else {
+          console.error('No notifications found.');
+        }
+      }, (error) => {
+        console.error("Error listening to Firestore:", error);
+      });
+  
+    // Clean up the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
+  
+  // Header right component for notifications
+  const HeaderRight = () => (
+    <TouchableOpacity 
+      onPress={() => navigation.navigate('Notification')} 
+      style={styles.headerRight}
+    >
+      <LottieView
+        ref={lottieRef}
+        source={{ uri: 'https://lottie.host/52a5bb77-176f-4f16-a03b-7020b4af670d/tYR5J4hmsD.json' }} 
+        style={styles.notificationIcon}
+        autoPlay={autoPlay}
+        loop={false}
+      />
+      {badgeCount > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{badgeCount}</Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+
+  const screenOptions = {
+    tabBarShowLabel: false,
+    headerShown: true,
+    headerStyle: {
+      backgroundColor: "#19a7c5",
+      elevation: 5,
+    },
+    headerRight: () => <HeaderRight />,
+    tabBarStyle: {
+      backgroundColor: "white",
+      height: 80,
+    },
+  };
 
   return (
-    <Tab.Navigator screenOptions={screenOptions}>
+    <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
       <Tab.Screen
         name="Home"
         component={HomeView}
         options={{
-          headerStyle: {
-            height: 130,
-            backgroundColor: "white",
-          },
-          headerTitle: () => (
-            <View style={styles.headerContainer}>
-              <View style={styles.welcomeContainer}>
-                <Text style={styles.welcomeText}>Hello</Text>
-                <Text style={styles.welcomeText}>Jhon Carlo!</Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <TouchableOpacity
-                  style={styles.notificationContainer}
-                  onPress={() => navigation.navigate('Notification')}
-                >
-                  <Ionicons name="notifications" size={24} color="#00bbf2" />
-                  <View style={styles.badgeContainer}>
-                    <Badge>{notificationsCount}</Badge> {/* Notification badge */}
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.settingsContainer}
-                  onPress={() => navigation.navigate('Settings')}
-                >
-                  <Ionicons name="cog" size={24} color="#00bbf2" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ),
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabIconContainer}>
               <Entypo name="home" size={24} color={focused ? "black" : "#00bbf2"} />
@@ -75,16 +119,10 @@ const Index: React.FC = () => {
           ),
         }}
       />
-
       <Tab.Screen
         name="Profile"
         component={ProfileView}
         options={{
-          headerTitle: () => (
-            <Text style={{ fontSize: 25, fontWeight: "bold", color: "black" }}>
-              Profile
-            </Text>
-          ),
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabIconContainer}>
               <AntDesign name="user" size={24} color={focused ? "black" : "#00bbf2"} />
@@ -93,7 +131,6 @@ const Index: React.FC = () => {
           ),
         }}
       />
-
       <Tab.Screen
         name="Schedules"
         component={SchedulesView}
@@ -112,7 +149,7 @@ const Index: React.FC = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabIconContainer}>
-              <AntDesign name='message1' size={24} color={focused ? "black" : "#00bbf2"} />
+              <AntDesign name="message1" size={24} color={focused ? "black" : "#00bbf2"} />
               <Text style={styles.tabLabel}>Messages</Text>
             </View>
           ),
@@ -123,37 +160,6 @@ const Index: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 25,
-  },
-  welcomeContainer: {
-    flexDirection: "column",
-    marginLeft: 100, // Add margin to create space on the left
-  },
-  welcomeText: {
-    fontSize: 20,
-    color: "black",
-  },
-  iconContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  notificationContainer: {
-    marginLeft: 20,
-    position: 'relative', // Position relative for the badge
-  },
-  badgeContainer: {
-    position: 'absolute',
-    right: 0, // Align badge to the right of the icon
-    top: -5,  // Adjust top value to position it above the icon
-  },
-  settingsContainer: {
-    marginLeft: 20,
-  },
   tabIconContainer: {
     alignItems: "center",
     justifyContent: "center",
@@ -161,6 +167,30 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 12,
     color: "#16247d",
+  },
+  headerRight: {
+    marginRight: 15,
+    position: 'relative',
+  },
+  notificationIcon: {
+    width: 40,
+    height: 40,
+  },
+  badge: {
+    position: 'absolute',
+    right: 10,
+    top: 5,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    width: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });
 
